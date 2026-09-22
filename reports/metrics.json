@@ -1,0 +1,78 @@
+{
+  "holdout_metrics": {
+    "train_rows": 6443,
+    "test_rows": 1411,
+    "base_rate": 0.07583274273564848,
+    "roc_auc": 0.8942004472220628,
+    "pr_auc": 0.7188445399742582,
+    "baseline_roc_auc_avg_days_late": 0.838570036121782,
+    "baseline_pr_auc_avg_days_late": 0.6103735207232709,
+    "recall_in_top_20pct": 0.7757009345794392
+  },
+  "walk_forward": {
+    "mean_roc_auc": 0.8953876093327897,
+    "std_roc_auc": 0.010202788455470055,
+    "folds": [
+      {
+        "snapshot": "2026-01-17",
+        "n_train": 6443,
+        "n_test": 360,
+        "base_rate": 0.07777777777777778,
+        "roc_auc": 0.8998493975903614,
+        "pr_auc": 0.6581045754811186
+      },
+      {
+        "snapshot": "2026-02-16",
+        "n_train": 6801,
+        "n_test": 356,
+        "base_rate": 0.07584269662921349,
+        "roc_auc": 0.9073511201170776,
+        "pr_auc": 0.7846485701300356
+      },
+      {
+        "snapshot": "2026-03-18",
+        "n_train": 7160,
+        "n_test": 349,
+        "base_rate": 0.07449856733524356,
+        "roc_auc": 0.8898547273160275,
+        "pr_auc": 0.734255828800613
+      },
+      {
+        "snapshot": "2026-04-17",
+        "n_train": 7520,
+        "n_test": 346,
+        "base_rate": 0.07514450867052024,
+        "roc_auc": 0.8844951923076924,
+        "pr_auc": 0.7418520981829791
+      }
+    ]
+  },
+  "bootstrap_ci_roc_auc": {
+    "point": 0.8942004472220628,
+    "ci_low": 0.8528154466259942,
+    "ci_high": 0.9312904239220399,
+    "n_boot_used": 1000
+  },
+  "band_validation": [
+    {
+      "band": "Low",
+      "n": 1295,
+      "bad_rate": 0.025482625482625483
+    },
+    {
+      "band": "Medium",
+      "n": 47,
+      "bad_rate": 0.2978723404255319
+    },
+    {
+      "band": "High",
+      "n": 69,
+      "bad_rate": 0.8695652173913043
+    }
+  ],
+  "cost_optimal_threshold": {
+    "threshold": 0.1,
+    "expected_cost": 3084429.3533999994,
+    "current_high_cut": 0.4
+  }
+}
