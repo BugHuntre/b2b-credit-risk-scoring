@@ -1,7 +1,7 @@
 # Buyer Credit Risk: B2B Receivables
 
 [![CI](https://github.com/BugHuntre/b2b-credit-risk-scoring/actions/workflows/ci.yml/badge.svg)](https://github.com/BugHuntre/b2b-credit-risk-scoring/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![Python](https://img.shields.io/badge/python-3.12%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 Scores every buyer on the probability of severe payment delinquency (>60 days late, or unpaid) in
@@ -114,7 +114,9 @@ pytest --cov=creditrisk   # tests + coverage
 ```
 
 CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs all three plus a full
-`train.py` smoke test on Python 3.10 and 3.12 for every push and PR to `main`.
+`train.py` smoke test on Python 3.12 and 3.13 for every push and PR to `main`. Python 3.12+ is
+required — xgboost's own minimum jumps from 3.10 straight to 3.12 with no 3.11-compatible release,
+and the 3.10-compatible xgboost is too old for shap's TreeExplainer to read (see `pyproject.toml`).
 
 ## Project layout
 

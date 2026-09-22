@@ -2,17 +2,18 @@
 name = "creditrisk"
 version = "0.1.0"
 description = "Buyer credit risk scoring for B2B receivables"
-requires-python = ">=3.10"
+# xgboost jumped its own minimum supported Python straight from 3.10 (xgboost 3.2.x) to 3.12
+# (xgboost 3.3+) -- there is no xgboost release that supports 3.11. Since shap's TreeExplainer
+# can't parse the base_score field of the older, 3.10-compatible xgboost 3.2.x (raises "could not
+# convert string to float"), supporting Python 3.10/3.11 here would mean pinning xgboost to a
+# two-year-old release. Requiring 3.12 keeps both dependencies current instead.
+requires-python = ">=3.12"
 readme = "README.md"
 license = { text = "MIT" }
 dependencies = [
     "pandas>=2.2",
     "numpy>=1.26",
     "scikit-learn>=1.4",
-    # Lower bounds are load-bearing, not just "known to work": shap's TreeExplainer fails to parse
-    # the base_score field of older xgboost boosters (e.g. xgboost 3.2 + shap 0.49 raises
-    # "could not convert string to float" inside shap). Don't lower these without re-testing
-    # scoring.score_buyers end to end.
     "xgboost>=3.4",
     "shap>=0.52",
     "streamlit>=1.35",
@@ -31,17 +32,13 @@ packages = ["creditrisk"]
 
 [tool.ruff]
 line-length = 110
-target-version = "py310"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
 ignore = ["E501"]
 
 [tool.mypy]
-# 3.12, not the 3.10 floor in requires-python: numpy's bundled .pyi stubs use PEP 695 `type`
-# statements that mypy can only parse under python_version >= 3.12, regardless of the interpreter
-# actually running the code. The project has no 3.12-only syntax, so this only affects stub
-# parsing, not what mypy accepts in creditrisk/ itself.
 python_version = "3.12"
 ignore_missing_imports = true
 warn_unused_ignores = true
