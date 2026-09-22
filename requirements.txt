@@ -1,7 +1,8 @@
 pandas>=2.2
 numpy>=1.26
 scikit-learn>=1.4
-xgboost>=2.0
-shap>=0.45
+# xgboost/shap lower bounds are load-bearing -- see the comment in pyproject.toml
+xgboost>=3.4
+shap>=0.52
 streamlit>=1.35
 matplotlib>=3.8

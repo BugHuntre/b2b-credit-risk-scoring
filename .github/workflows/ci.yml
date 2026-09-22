@@ -31,7 +31,6 @@ jobs:
 
       - name: Type check (mypy)
         run: mypy creditrisk --ignore-missing-imports
-        continue-on-error: true   # informative for now; flip to required once the codebase is fully typed
 
       - name: Unit tests
         run: pytest --cov=creditrisk --cov-report=term-missing

@@ -9,8 +9,12 @@ dependencies = [
     "pandas>=2.2",
     "numpy>=1.26",
     "scikit-learn>=1.4",
-    "xgboost>=2.0",
-    "shap>=0.45",
+    # Lower bounds are load-bearing, not just "known to work": shap's TreeExplainer fails to parse
+    # the base_score field of older xgboost boosters (e.g. xgboost 3.2 + shap 0.49 raises
+    # "could not convert string to float" inside shap). Don't lower these without re-testing
+    # scoring.score_buyers end to end.
+    "xgboost>=3.4",
+    "shap>=0.52",
     "streamlit>=1.35",
     "matplotlib>=3.8",
 ]
@@ -34,7 +38,11 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 ignore = ["E501"]
 
 [tool.mypy]
-python_version = "3.10"
+# 3.12, not the 3.10 floor in requires-python: numpy's bundled .pyi stubs use PEP 695 `type`
+# statements that mypy can only parse under python_version >= 3.12, regardless of the interpreter
+# actually running the code. The project has no 3.12-only syntax, so this only affects stub
+# parsing, not what mypy accepts in creditrisk/ itself.
+python_version = "3.12"
 ignore_missing_imports = true
 warn_unused_ignores = true
 no_implicit_optional = true
