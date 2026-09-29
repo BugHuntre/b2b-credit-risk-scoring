@@ -22,6 +22,8 @@ def _reasons(shap_row: np.ndarray, x_row: pd.Series, cols: list[str], k: int) ->
         if shap_row[i] <= 0.05:
             break
         name = cols[i]
+        if name.startswith("segment_"):   # a one-hot column, not a human-meaningful "reason"
+            continue
         if name == "late_trend" and not x_row[name] > 0:   # "improving" is not a risk reason to show
             continue
         label, fmt = FEATURE_INFO.get(name, (name, str))
@@ -34,7 +36,11 @@ def score_buyers(bundle: ModelBundle, buyers: pd.DataFrame, invoices: pd.DataFra
                  as_of, top_k: int = 3) -> pd.DataFrame:
     settings = bundle.settings
     feats = build_features(buyers, invoices, as_of)
-    X = feats[bundle.features]
+    # reindex, not feats[bundle.features]: a segment one-hot column the model was trained on can be
+    # absent here whenever this batch doesn't happen to include that segment (a small API request,
+    # or a filtered/partial upload) -- fill_value=0 is exactly correct, since "not that segment" is
+    # what a 0 in that column already means.
+    X = feats.reindex(columns=bundle.features, fill_value=0)
     prob = bundle.model.predict_proba(X)[:, 1]
     contrib = shap.TreeExplainer(bundle.model).shap_values(X)
 

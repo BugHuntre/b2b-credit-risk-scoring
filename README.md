@@ -56,8 +56,9 @@ pip install -e ".[dev]"
 
 python train.py --report   # generates sample data on first run, trains, writes reports/
 streamlit run app.py        # dashboard at localhost:8501
+uvicorn api:app --reload    # REST API at localhost:8000/docs
 
-pytest                       # 19 tests, 97% coverage on creditrisk/
+pytest                       # 28 tests, 97% coverage on creditrisk/
 ```
 
 ## Architecture
@@ -91,6 +92,29 @@ flowchart LR
   band cut-offs, illustrative unit costs, model hyperparameters) in one place.
 - **[app.py](app.py)** — the dashboard: portfolio overview, a filterable watchlist, per-buyer
   drill-down, and a model-quality tab.
+- **[api.py](api.py)** — a REST API over the same scoring pipeline, for a downstream system to
+  call instead of using the dashboard.
+
+## API
+
+```bash
+python train.py           # needs a trained model at models/bundle.joblib first
+uvicorn api:app --reload
+open http://localhost:8000/docs   # interactive Swagger UI
+```
+
+`GET /health` reports whether a model is loaded and its hold-out ROC-AUC. `POST /score` takes a
+JSON body with the same fields as `buyers.csv`/`invoices.csv` (a buyer can have zero invoices — it
+still gets a low-confidence score) and an optional `as_of` date, and returns each buyer's score,
+band, exposure at risk, suggested limit, action and reason codes:
+
+```bash
+curl -X POST localhost:8000/score -H "Content-Type: application/json" -d '{
+  "buyers": [{"buyer_id": "B1", "buyer_name": "Acme Co", "country": "USA", "segment": "Wholesaler",
+              "onboarded_date": "2024-01-01", "credit_limit": 50000, "payment_terms_days": 30}],
+  "invoices": []
+}'
+```
 
 ## Use your own data
 
@@ -109,7 +133,7 @@ nothing is hardcoded to the synthetic data's shape.
 ```bash
 pip install -e ".[dev]"
 ruff check .              # lint
-mypy creditrisk           # type check
+mypy creditrisk api.py    # type check
 pytest --cov=creditrisk   # tests + coverage
 ```
 
@@ -127,6 +151,7 @@ notebooks/        EDA and model-development walkthrough
 docs/MODEL_CARD.md  intended use, evaluation detail, limitations
 train.py          CLI: fit the model, optionally produce the full evaluation report
 app.py            Streamlit dashboard
+api.py            FastAPI REST service over the same scoring pipeline
 reports/          generated metrics + plots (committed here as an example on synthetic data)
 ```
 

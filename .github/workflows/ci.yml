@@ -30,7 +30,7 @@ jobs:
         run: ruff check .
 
       - name: Type check (mypy)
-        run: mypy creditrisk --ignore-missing-imports
+        run: mypy creditrisk api.py --ignore-missing-imports
 
       - name: Unit tests
         run: pytest --cov=creditrisk --cov-report=term-missing

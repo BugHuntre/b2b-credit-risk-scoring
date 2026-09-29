@@ -6,3 +6,5 @@ xgboost>=3.4
 shap>=0.52
 streamlit>=1.35
 matplotlib>=3.8
+fastapi>=0.110
+uvicorn[standard]>=0.29
